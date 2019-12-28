@@ -1,4 +1,4 @@
-class HttpService {
+export default class HttpService {
 
   get(url) {
 

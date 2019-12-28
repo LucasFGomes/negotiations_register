@@ -15,7 +15,7 @@
 
   <div id="mensagemView"></div>
 
-  <form class="form" onsubmit="negotiationController.add(event)">
+  <form class="form">
 
     <div class="form-group">
       <label for="data">Data</label>
@@ -32,14 +32,14 @@
       <input id="valor" type="number" class="form-control" min="0.01" step="0.01" value="0.0" required />
     </div>
 
-    <button class="btn btn-primary" type="submit">Incluir</button>
+    <button id="envia" class="btn btn-primary" type="submit">Incluir</button>
   </form>
 
   <div class="text-center">
-    <button onclick="negotiationController.importNegotiations()" class="btn btn-primary text-center" type="button">
+    <button id="importNegotiations" class="btn btn-primary text-center" type="button">
       Importar Negociações
     </button>
-    <button class="btn btn-primary text-center" type="button" onclick="negotiationController.deleteNegotiations()">
+    <button onclick="negotiationController.importNegotiations()" class="btn btn-primary text-center" type="button">
       Apagar
     </button>
   </div>
@@ -48,7 +48,7 @@
 
   <div id="negociacoesView"></div>
 
-  <script src="js/models/Negotiation.js"></script>
+  <!-- <script src="js/models/Negotiation.js"></script>
   <script src="js/models/Message.js"></script>
   <script src="js/controllers/NegotiationController.js"></script>
   <script src="js/helpers/DateHelper.js"></script>
@@ -59,11 +59,54 @@
   <script src="js/services/ProxyFactory.js"></script>
   <script src="js/helpers/Bind.js"></script>
   <script src="js/services/NegotiationsService.js"></script>
-  <script src="js/services/HttpService.js"></script>
+  <script src="js/services/HttpService.js"></script> -->
+
+  <script type="module">
+    import NegotiationController from './js/controllers/NegotiationController.js';
+    import ConnectionFactory from './js/services/ConnectionFactory.js';
+    import NegotiationDAO from './js/dao/NegotiationDAO.js';
+    import Negotiation from './js/models/Negotiation.js';
+
+    async function getConexao() {
+      await ConnectionFactory.getConnection().then(connection => {
+
+        new NegotiationDAO(connection).adiciona(new Negotiation(new Date(), 3, 122));
+
+      });
+
+      console.log(ConnectionFactory.closeConnection());
+    }
+
+    let negotiationController = new NegotiationController();
+
+    // negotiationController.deleteNegotiations();
+
+
+    // getConexao();
+    // console.log('OKKK');
+
+
+
+
+    // let button = document.getElementById('importNegotiations');
+    // button.addEventListener('click', () => negotiationController.importNegotiations());
+
+    // negotiationController.deleteNegotiations()
+    // let buttonEnvia = document.getElementById('envia');
+    // console.log(buttonEnvia)
+    // buttonEnvia.addEventListener('submit', (event) => {
+    //   console.log('EVENT >>>>', event)
+    //   negotiationController.add(event);
+    // })
+  </script>
 
   <script>
-    let negotiationController = new NegotiationController();
+
+    // let negotiationController = new NegotiationController();
+    // let negotiationController = new NegotiationController();
+    // console.log(negotiationController);
   </script>
+
 
 </body>
 

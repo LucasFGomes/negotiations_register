@@ -1,4 +1,4 @@
-class Negotiation {
+export default class Negotiation {
 
   constructor(date, quantity, value) {
     this._date = new Date(date.getTime());

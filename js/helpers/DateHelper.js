@@ -1,4 +1,4 @@
-class DateHelper {
+export default class DateHelper {
 
   static convertTextToDate(text) {
     return new Date(...text.split('-').map((item, i) => item - i % 2))
