@@ -1,6 +1,6 @@
-import Negotiation from "../models/Negotiation.js";
+// import Negotiation from "../models/Negotiation.js";
 
-export default class NegotiationDAO {
+class NegotiationDAO {
 
   constructor(connection) {
     this._connection = connection;

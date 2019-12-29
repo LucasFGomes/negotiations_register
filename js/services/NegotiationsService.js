@@ -1,7 +1,7 @@
-import Negotiation from '../models/Negotiation.js';
-import HttpService from '../services/HttpService.js';
+// import Negotiation from '../models/Negotiation.js';
+// import HttpService from '../services/HttpService.js';
 
-export default class NegotiationsService {
+class NegotiationsService {
 
   constructor() {
     this._httpService = new HttpService();
@@ -45,4 +45,74 @@ export default class NegotiationsService {
 
     });
   }
+
+  getNegotiations() {
+
+    return Promise.all([
+      this.getNegotiationsWeek(),
+      this.getNegotiationsWeekPrevious(),
+      this.getNegotiationsWeekPreviousToLast(),
+    ]).then((periods) => {
+
+      let negotiations = periods.reduce((data, period) => data.concat(period), []);
+      return negotiations;
+
+    }).catch(error => {
+      throw new Error(error)
+    });
+
+  }
+
+  register(negotiation) {
+
+    return ConnectionFactory.getConnection()
+      .then(connection => new NegotiationDAO(connection))
+      .then(dao => dao.insert(negotiation))
+      .then(() => 'Negociação adicionada com sucesso!')
+      .catch(error => {
+        console.log(error);
+        throw new Error('Não foi possível adicionar a negociação.');
+      });
+
+  }
+
+  toList() {
+
+    return ConnectionFactory.getConnection()
+      .then(connection => new NegotiationDAO(connection))
+      .then(dao => dao.findAll())
+      .catch(error => {
+        console.log(error);
+        throw new Error('Não foi possível obter as negociações.');
+      });
+
+  }
+
+  delete() {
+
+    return ConnectionFactory.getConnection()
+      .then(connection => new NegotiationDAO(connection))
+      .then(dao => dao.deleteAll())
+      .then(() => 'Negociações apagadas com sucesso.')
+      .catch(error => {
+        console.log(error);
+        throw new Error('Não foi possível apagar as negociações.');
+      });
+
+  }
+
+  importNegotiations(currentList) {
+
+    return this.getNegotiations()
+      .then(negotiations =>
+        negotiations.filter(negotiation =>
+          !currentList.some(negotiationExisting => negotiation.equals(negotiationExisting)))
+      )
+      .catch(error => {
+        console.log(error);
+        throw new Error('Não foi possível importar as negociações.');
+      })
+
+  }
+
 }

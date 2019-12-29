@@ -1,18 +1,18 @@
-import Negotiation from '../models/Negotiation.js';
-import NegotiationsService from '../services/NegotiationsService.js';
-import Bind from '../helpers/Bind.js';
+// import Negotiation from '../models/Negotiation.js';
+// import NegotiationsService from '../services/NegotiationsService.js';
+// import Bind from '../helpers/Bind.js';
 
-import NegotiationsList from '../models/NegotiationsList.js';
-import NegotiationsView from '../views/NegotiationsView.js';
-import Message from '../models/Message.js';
-import MessageView from '../views/MessageView.js';
+// import NegotiationsList from '../models/NegotiationsList.js';
+// import NegotiationsView from '../views/NegotiationsView.js';
+// import Message from '../models/Message.js';
+// import MessageView from '../views/MessageView.js';
 
-import DateHelper from '../helpers/DateHelper.js';
+// import DateHelper from '../helpers/DateHelper.js';
 
-import ConnectionFactory from '../services/ConnectionFactory.js';
-import NegotiationDAO from '../dao/NegotiationDAO.js';
+// import ConnectionFactory from '../services/ConnectionFactory.js';
+// import NegotiationDAO from '../dao/NegotiationDAO.js';
 
-export default class NegotiationController {
+class NegotiationController {
 
   constructor() {
     let $ = document.querySelector.bind(document);
@@ -33,33 +33,36 @@ export default class NegotiationController {
       'text'
     );
 
-    ConnectionFactory.getConnection()
-      .then(connection => new NegotiationDAO(connection))
-      .then(dao => dao.findAll())
-      .then(negotiations => negotiations.forEach(negotiation => this._negotiationsList.add(negotiation)))
-      .catch(error => {
-        console.log(error);
-        this._message.text = error;
-      })
+    this._negotiationsService = new NegotiationsService();
 
+    this._init();
+  }
+
+  _init() {
+
+    this._negotiationsService.toList()
+      .then(negotiations =>
+        negotiations.forEach(negotiation => this._negotiationsList.add(negotiation))
+      )
+      .catch(error => this._message.text = error)
+
+    setInterval(() => {
+      this.importNegotiations();
+    }, 2000);
   }
 
   add(event) {
-    // event.preventDefault();
+    event.preventDefault();
 
-    ConnectionFactory.getConnection().then(connection => {
+    let negotiation = this._addNegotiation();
 
-      let negotiation = this._addNegotiation();
-
-      new NegotiationDAO(connection).insert(negotiation).then(() => {
-
+    this._negotiationsService.register(negotiation)
+      .then((message) => {
         this._negotiationsList.add(negotiation);
-        this._message.text = 'Negociação adicionada com sucesso!';
+        this._message.text = message;
         this._cleanForm();
-
-      });
-
-    }).catch(error => this._message.text = error);
+      })
+      .catch(error => this._message.text = error);
 
   }
 
@@ -73,29 +76,19 @@ export default class NegotiationController {
   }
 
   importNegotiations() {
-    let negotiationsService = new NegotiationsService();
 
-    Promise.all([
-
-      negotiationsService.getNegotiationsWeek(),
-      negotiationsService.getNegotiationsWeekPrevious(),
-      negotiationsService.getNegotiationsWeekPreviousToLast(),
-
-    ]).then(negotiations => {
-
-      negotiations.reduce((newArray, currentArray) => newArray.concat(currentArray), [])
-        .forEach(negotiation => this._negotiationsList.add(negotiation));
-      this._message.text = 'Negociações importadas com sucesso.'
-
-    }).catch((error) => this._message.text = error);
+    this._negotiationsService.importNegotiations(this._negotiationsList.negotiations)
+      .then(negotiations => {
+        negotiations.forEach(negotiation => this._negotiationsList.add(negotiation));
+        // this._message.text = 'Negociações importadas com sucesso.'
+      })
+      .catch((error) => this._message.text = error);
 
   }
 
   deleteNegotiations() {
 
-    ConnectionFactory.getConnection()
-      .then(connection => new NegotiationDAO(connection))
-      .then(dao => dao.deleteAll())
+    this._negotiationsService.delete()
       .then(message => {
         this._message.text = message;
         this._negotiationsList.empties();

@@ -1,4 +1,4 @@
-export default class Negotiation {
+class Negotiation {
 
   constructor(date, quantity, value) {
     this._date = new Date(date.getTime());
@@ -22,6 +22,10 @@ export default class Negotiation {
 
   get value() {
     return this._value;
+  }
+
+  equals(otherNegotiation) {
+    return this._date.getTime() == otherNegotiation.date.getTime() && this._value == otherNegotiation.value;
   }
 
 }

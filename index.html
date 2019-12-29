@@ -15,7 +15,7 @@
 
   <div id="mensagemView"></div>
 
-  <form class="form">
+  <form class="form" onsubmit="negotiationController.add(event)">
 
     <div class="form-group">
       <label for="data">Data</label>
@@ -36,10 +36,7 @@
   </form>
 
   <div class="text-center">
-    <button id="importNegotiations" class="btn btn-primary text-center" type="button">
-      Importar Negociações
-    </button>
-    <button onclick="negotiationController.importNegotiations()" class="btn btn-primary text-center" type="button">
+    <button onclick="negotiationController.deleteNegotiations()" class="btn btn-primary text-center" type="button">
       Apagar
     </button>
   </div>
@@ -48,7 +45,7 @@
 
   <div id="negociacoesView"></div>
 
-  <!-- <script src="js/models/Negotiation.js"></script>
+  <script src="js/models/Negotiation.js"></script>
   <script src="js/models/Message.js"></script>
   <script src="js/controllers/NegotiationController.js"></script>
   <script src="js/helpers/DateHelper.js"></script>
@@ -59,25 +56,28 @@
   <script src="js/services/ProxyFactory.js"></script>
   <script src="js/helpers/Bind.js"></script>
   <script src="js/services/NegotiationsService.js"></script>
-  <script src="js/services/HttpService.js"></script> -->
+  <script src="js/services/HttpService.js"></script>
+  <script src="js/services/ConnectionFactory.js"></script>
+  <script src="js/dao/NegotiationDAO.js"></script>
+
 
   <script type="module">
-    import NegotiationController from './js/controllers/NegotiationController.js';
-    import ConnectionFactory from './js/services/ConnectionFactory.js';
-    import NegotiationDAO from './js/dao/NegotiationDAO.js';
-    import Negotiation from './js/models/Negotiation.js';
+    // import NegotiationController from './js/controllers/NegotiationController.js';
+    // import ConnectionFactory from './js/services/ConnectionFactory.js';
+    // import NegotiationDAO from './js/dao/NegotiationDAO.js';
+    // import Negotiation from './js/models/Negotiation.js';
 
-    async function getConexao() {
-      await ConnectionFactory.getConnection().then(connection => {
+    // async function getConexao() {
+    //   await ConnectionFactory.getConnection().then(connection => {
 
-        new NegotiationDAO(connection).adiciona(new Negotiation(new Date(), 3, 122));
+    //     new NegotiationDAO(connection).adiciona(new Negotiation(new Date(), 3, 122));
 
-      });
+    //   });
 
-      console.log(ConnectionFactory.closeConnection());
-    }
+    //   console.log(ConnectionFactory.closeConnection());
+    // }
 
-    let negotiationController = new NegotiationController();
+    // let negotiationController = new NegotiationController();
 
     // negotiationController.deleteNegotiations();
 
@@ -102,7 +102,7 @@
 
   <script>
 
-    // let negotiationController = new NegotiationController();
+    let negotiationController = new NegotiationController();
     // let negotiationController = new NegotiationController();
     // console.log(negotiationController);
   </script>

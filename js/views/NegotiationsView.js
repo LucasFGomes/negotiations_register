@@ -1,7 +1,7 @@
-import View from './View.js';
-import DateHelper from '../helpers/DateHelper.js';
+// import View from './View.js';
+// import DateHelper from '../helpers/DateHelper.js';
 
-export default class NegotiationsView extends View {
+class NegotiationsView extends View {
 
   template(model) {
     return `

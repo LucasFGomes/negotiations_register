@@ -1,4 +1,4 @@
-export default class ProxyFactory {
+class ProxyFactory {
 
   static create(objeto, props, acao) {
     return new Proxy(objeto, {
